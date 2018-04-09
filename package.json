@@ -1,0 +1,41 @@
+{
+  "name": "boilerplate",
+  "version": "1.0.0",
+  "description": "my boilerplate for some projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel": "NODE_ENV=production babel src/scripts --out-dir src/scripts/babel --source-maps inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vre2h/boilerplate.git"
+  },
+  "keywords": [
+    "boilerplate",
+    "js",
+    "html",
+    "scss"
+  ],
+  "author": "Oganisyan Vrezh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vre2h/boilerplate/issues"
+  },
+  "homepage": "https://github.com/vre2h/boilerplate#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "browser-sync": "^2.23.6",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.3",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^4.0.1",
+    "gulp-uglify": "^3.0.0",
+    "run-sequence": "^2.2.1"
+  }
+}
