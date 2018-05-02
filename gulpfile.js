@@ -1,4 +1,5 @@
 /* global require */
+/* eslint-disable */
 
 'use strict';
  
@@ -10,7 +11,13 @@ var gulp = require('gulp'),
 	del = require('del'),
 	run = require('run-sequence'), //запуск тасков последовательно
 	concat = require('gulp-concat'),
-	uglify = require('gulp-uglify'); 
+	uglify = require('gulp-uglify'),
+	browserify = require('browserify'),
+	source = require('vinyl-source-stream'),
+	buffer = require('vinyl-buffer'),
+	sourcemaps = require('gulp-sourcemaps'),
+	babel = require('gulp-babel'),
+	babelify = require('babelify');
 
 // sass compiler and minifier
 gulp.task('styles', function () {
@@ -25,7 +32,9 @@ gulp.task('styles', function () {
 
 // watcher
 gulp.task('watch', function () {
-	gulp.watch('src/styles/styles.scss', ['styles']);
+	gulp.watch('src/styles/styles.{scss,sass}', ['styles']);
+	gulp.watch(['src/scripts/**/*.js'], ['scripts']);
+	gulp.watch('src/*.html', browserSync.reload);
 });
 
 // Очистка папки build
@@ -47,37 +56,38 @@ gulp.task('build', function(fn) {
 gulp.task('copy', function() {
 	return gulp.src([
 		// 'src/fonts/**/*.*',
-		'src/scripts/index.min.js',
+		'src/scripts/bundle.js',
 		'src/styles/styles.min.css',
 		'src/*.html'
-	], { 
+	], {
 		base: 'src'
 	})
 		.pipe(gulp.dest('build'));
 });
 
-
-// Слежение за изменениями, локальный сервер
-gulp.task('serve', ['styles'], function() {
-	browserSync.init({
-		server: 'src',
-		notify: false,
-		open: true,
-		tunnel: false,
-		cors: true,
-		ui: false
-	});
-
-	gulp.watch('src/styles/styles.{scss,sass}', ['styles']);
-	gulp.watch(['src/scripts/**/*.js'], ['js']);
-	gulp.watch('src/*.html', browserSync.reload);
-});
-
 // Сборка скриптов
 gulp.task('js', function() {
-	return gulp.src('src/scripts/babel/index.js')
-		.pipe(concat('index.min.js'))
+	return gulp.src('src/scripts/index.js')
+		.pipe(babel())
 		.pipe(uglify())
+		.pipe(rename('index.min.js'))
     .pipe(gulp.dest('src/scripts/'))
     .pipe(browserSync.reload({stream: true}));
+});
+ 
+// Lets bring es6 to es5 with this.
+// Babel - converts ES6 code to ES5 - however it doesn't handle imports.
+// Browserify - crawls your code for dependencies and packages them up 
+// into one file. can have plugins.
+// Babelify - a babel plugin for browserify, to make browserify 
+// handle es6 including imports.
+gulp.task('scripts', function() {
+	browserify({
+    	entries: './src/scripts/index.js',
+    	debug: true
+  	})
+    .transform(babelify)
+		.bundle()
+		.pipe(source('bundle.js'))
+    .pipe(gulp.dest('./src/scripts/'));
 });
