@@ -43,9 +43,7 @@
     "gulplog": "^1.0.0",
     "run-sequence": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
-  },
-  "dependencies": {
+    "vinyl-source-stream": "^2.0.0",
     "npm": "^6.0.0"
   }
 }
