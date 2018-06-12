@@ -36,7 +36,7 @@ var gulp = require('gulp'),
 		clean: './build',
 	}
 
-	const blocks = [];
+	const blocks = ['src/scripts/blocks/example.js'];
 
 // html:builder
 gulp.task('html:build', function () {
@@ -73,7 +73,7 @@ gulp.task('clean', function() {
 // Сборка скриптов
 gulp.task('js', function() {
 	return gulp.src(blocks)
-		.pipe(concat())
+		.pipe(concat('all.js'))
 		.pipe(babel())
 		.pipe(uglify())
 		.pipe(rename('index.min.js'))
