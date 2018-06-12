@@ -73,6 +73,7 @@ gulp.task('clean', function() {
 // Сборка скриптов
 gulp.task('js', function() {
 	return gulp.src(blocks)
+		.pipe(sourcemaps.init())
 		.pipe(concat('all.js'))
 		.pipe(babel())
 		.pipe(uglify())
