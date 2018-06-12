@@ -25,6 +25,7 @@ var gulp = require('gulp'),
 		},
 		src: {
 			html: 'src/*.html',
+			htmlTemplate: 'src/templates/*.html',
 			js: 'src/scripts/index.js',
 			css: 'src/styles/styles.scss'
 		},
@@ -40,9 +41,9 @@ var gulp = require('gulp'),
 
 // html:builder
 gulp.task('html:build', function () {
-	gulp.src(path.src.html)
+	return gulp.src(path.src.htmlTemplate)
 		.pipe(rigger())
-		.pipe(gulp.dest(path.src.html))
+		.pipe(gulp.dest('src/'))
 		.pipe(browserSync.reload({stream: true}));
 })
 
@@ -61,7 +62,7 @@ gulp.task('styles', function () {
 gulp.task('watch', function () {
 	gulp.watch('src/styles/styles.{scss,sass}', ['styles']);
 	gulp.watch(['src/scripts/**/*.js'], ['js']);
-	gulp.watch('src/*.html', browserSync.reload);
+	gulp.watch('src/**/*.html', ['html:build']);
 });
 
 // Очистка папки build
@@ -98,7 +99,7 @@ gulp.task('copy', function() {
 		// 'src/fonts/**/*.*',
 		'src/scripts/bundle.js',
 		'src/styles/styles.min.css',
-		'src/*.html'
+		'src/*.min.html'
 	], {
 		base: 'src'
 	})
