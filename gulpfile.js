@@ -17,27 +17,27 @@ var gulp = require('gulp'),
 	babel = require('gulp-babel');
 
 
-	const path = {
-		build: {
-			html: 'build/',
-			js: 'build/js',
-			css: 'build/css'
-		},
-		src: {
-			html: 'src/*.html',
-			htmlTemplate: 'src/templates/*.html',
-			js: 'src/scripts/index.js',
-			css: 'src/styles/styles.scss'
-		},
-		watch: {
-			html: 'src/**/*.html',
-			js: 'src/scripts/**/*.js',
-			css: 'src/styles/**/*.scss'
-		},
-		clean: './build',
-	}
+const path = {
+	build: {
+		html: 'build/',
+		js: 'build/js',
+		css: 'build/css'
+	},
+	src: {
+		html: 'src/*.html',
+		htmlTemplate: 'src/templates/*.html',
+		js: 'src/scripts/index.js',
+		css: 'src/styles/styles.scss'
+	},
+	watch: {
+		html: 'src/**/*.html',
+		js: 'src/scripts/**/*.js',
+		css: 'src/styles/**/*.scss'
+	},
+	clean: './build',
+}
 
-	const blocks = ['src/scripts/blocks/example.js'];
+const blocks = ['src/scripts/blocks/example.js'];
 
 // html:builder
 gulp.task('html:build', function () {
@@ -97,9 +97,9 @@ gulp.task('build', function(fn) {
 gulp.task('copy', function() {
 	return gulp.src([
 		// 'src/fonts/**/*.*',
-		'src/scripts/bundle.js',
+		'src/scripts/index.min.js',
 		'src/styles/styles.min.css',
-		'src/*.min.html'
+		'src/*.html'
 	], {
 		base: 'src'
 	})
