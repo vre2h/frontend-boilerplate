@@ -2,22 +2,49 @@
 /* eslint-disable */
 
 'use strict';
- 
+
 var gulp = require('gulp'),
 	sass = require('gulp-sass'),
 	cleanCSS = require('gulp-clean-css'),
 	browserSync  = require('browser-sync').create(),
 	rename = require('gulp-rename'),
 	del = require('del'),
+	rigger = require('gulp-rigger'),
 	run = require('run-sequence'), //запуск тасков последовательно
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
-	browserify = require('browserify'),
-	source = require('vinyl-source-stream'),
-	buffer = require('vinyl-buffer'),
 	sourcemaps = require('gulp-sourcemaps'),
-	babel = require('gulp-babel'),
-	babelify = require('babelify');
+	babel = require('gulp-babel');
+
+
+	const path = {
+		build: {
+			html: 'build/',
+			js: 'build/js',
+			css: 'build/css'
+		},
+		src: {
+			html: 'src/*.html',
+			js: 'src/scripts/index.js',
+			css: 'src/styles/styles.scss'
+		},
+		watch: {
+			html: 'src/**/*.html',
+			js: 'src/scripts/**/*.js',
+			css: 'src/styles/**/*.scss'
+		},
+		clean: './build',
+	}
+
+	const blocks = [];
+
+// html:builder
+gulp.task('html:build', function () {
+	gulp.src(path.src.html)
+		.pipe(rigger())
+		.pipe(gulp.dest(path.src.html))
+		.pipe(browserSync.reload({stream: true}));
+})
 
 // sass compiler and minifier
 gulp.task('styles', function () {
@@ -33,13 +60,25 @@ gulp.task('styles', function () {
 // watcher
 gulp.task('watch', function () {
 	gulp.watch('src/styles/styles.{scss,sass}', ['styles']);
-	gulp.watch(['src/scripts/**/*.js'], ['scripts']);
+	gulp.watch(['src/scripts/**/*.js'], ['js']);
 	gulp.watch('src/*.html', browserSync.reload);
 });
 
 // Очистка папки build
 gulp.task('clean', function() {
-	return del('build');
+	return del(path.clean);
+});
+
+
+// Сборка скриптов
+gulp.task('js', function() {
+	return gulp.src(blocks)
+		.pipe(concat())
+		.pipe(babel())
+		.pipe(uglify())
+		.pipe(rename('index.min.js'))
+    .pipe(gulp.dest('src/scripts/'))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 // Сборка проекта в папку build
@@ -63,31 +102,4 @@ gulp.task('copy', function() {
 		base: 'src'
 	})
 		.pipe(gulp.dest('build'));
-});
-
-// Сборка скриптов
-gulp.task('js', function() {
-	return gulp.src('src/scripts/index.js')
-		.pipe(babel())
-		.pipe(uglify())
-		.pipe(rename('index.min.js'))
-    .pipe(gulp.dest('src/scripts/'))
-    .pipe(browserSync.reload({stream: true}));
-});
- 
-// Lets bring es6 to es5 with this.
-// Babel - converts ES6 code to ES5 - however it doesn't handle imports.
-// Browserify - crawls your code for dependencies and packages them up 
-// into one file. can have plugins.
-// Babelify - a babel plugin for browserify, to make browserify 
-// handle es6 including imports.
-gulp.task('scripts', function() {
-	browserify({
-    	entries: './src/scripts/index.js',
-    	debug: true
-  	})
-    .transform(babelify)
-		.bundle()
-		.pipe(source('bundle.js'))
-    .pipe(gulp.dest('./src/scripts/'));
 });
